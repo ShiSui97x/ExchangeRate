@@ -3,6 +3,14 @@
     Date: 2024-08-09
     A simple GUI application to convert currency, get exchange rates, and check the API quota using the ExchangeRate API.
     The website for the API is: https://www.exchangerate-api.com/
+    
+    Make sure to install the required packages before running the script:
+    - ttkbootstrap
+    - requests
+    - python-dotenv
+    with the following command:
+    pip install ttkbootstrap requests python-dotenv
+    
  """
 
 import ttkbootstrap as ttk
