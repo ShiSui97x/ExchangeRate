@@ -15,7 +15,7 @@ import requests
 import os
 import re
 
-load_dotenv("./api_key.env")
+load_dotenv("path/to/.env")
 
 API_KEY = os.getenv("API_KEY")
 ADMIN = os.getenv("ADMIN")
