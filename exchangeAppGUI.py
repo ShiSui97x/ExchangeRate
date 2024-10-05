@@ -13,17 +13,29 @@
     
  """
 
-import ttkbootstrap as ttk
-from ttkbootstrap import Label, Entry, Button, Frame, Menu, Toplevel, IntVar, Checkbutton, PhotoImage, Style
-from ttkbootstrap.scrolled import ScrolledText
-from ttkbootstrap.icons import Icon
-from ttkbootstrap.constants import BOTH, YES
-from dotenv import load_dotenv
-import requests
 import os
 import re
 
-load_dotenv("path/to/.env")
+import requests
+import ttkbootstrap as ttk
+from dotenv import load_dotenv
+from ttkbootstrap import (
+    Button,
+    Checkbutton,
+    Entry,
+    Frame,
+    IntVar,
+    Label,
+    Menu,
+    PhotoImage,
+    Style,
+    Toplevel,
+)
+from ttkbootstrap.constants import BOTH, YES
+from ttkbootstrap.icons import Icon
+from ttkbootstrap.scrolled import ScrolledText
+
+load_dotenv("./api_key.env")
 
 API_KEY = os.getenv("API_KEY")
 ADMIN = os.getenv("ADMIN")
@@ -88,11 +100,9 @@ class ExchangeRatesDialog(Toplevel):
         text_rates = re.sub(r",", "\n", text_rates)
 
         # Display the exchange rates in a ScrolledText widget
-        stext = ScrolledText(self, autohide=True, height=20,
-                             width=50, font=("Helvetica", 10))
+        stext = ScrolledText(self, autohide=True, height=20, width=50, font=("Helvetica", 10))
         stext.pack(fill=BOTH, expand=YES)
         stext.insert("1.0", text_rates.strip())
-        stext.config(state="disabled")
 
 
 # Check the quota of the API
@@ -113,9 +123,7 @@ def get_api_quota():
     quota = quota.json()
 
     # Display the quota information for 5 seconds
-    quota_label.config(
-        text=f"Quota: {quota['requests_remaining']} requests remaining"
-    )
+    quota_label.config(text=f"Quota: {quota['requests_remaining']} requests remaining")
     admin_entry.delete(0, ttk.END)
     admin_password_entry.delete(0, ttk.END)
     quota_label.after(3000, lambda: quota_label.config(text=""))
@@ -133,15 +141,13 @@ def get_exchange_rate():
     The currency code should be in the ISO 4217 format. Ex: USD, EUR, JPY, etc.
     """
 
-    from_currency = from_currency_entry.get(
-    ).upper() if from_currency_entry.get() else None
+    from_currency = from_currency_entry.get().upper() if from_currency_entry.get() else None
 
     to_currency = to_currency_entry.get().upper() if to_currency_entry.get() else None
 
     if not from_currency:
         exchange_rate_label.config(text="Please enter the source currency!")
-        exchange_rate_label.after(
-            3000, lambda: exchange_rate_label.config(text=""))
+        exchange_rate_label.after(3000, lambda: exchange_rate_label.config(text=""))
         return
 
     if to_currency:
@@ -152,10 +158,11 @@ def get_exchange_rate():
         response_json = response.json()
         exchange_rate = response_json["conversion_rates"][to_currency]
 
-        exchange_rate_label.config(text=f"Exchange rate for {from_currency} to {
-                                   to_currency}: {exchange_rate}")
-        exchange_rate_label.after(
-            10000, lambda: exchange_rate_label.config(text=""))
+        exchange_rate_label.config(
+            text=f"Exchange rate for {from_currency} to {
+                                   to_currency}: {exchange_rate}"
+        )
+        exchange_rate_label.after(10000, lambda: exchange_rate_label.config(text=""))
         from_currency_entry.delete(0, ttk.END)
         to_currency_entry.delete(0, ttk.END)
 
@@ -184,7 +191,8 @@ def convert_currency():
     amount = amount_entry.get()
 
     conversion = requests.get(
-        f"https://v6.exchangerate-api.com/v6/{API_KEY}/pair/{from_currency}/{to_currency}/{amount}")
+        f"https://v6.exchangerate-api.com/v6/{API_KEY}/pair/{from_currency}/{to_currency}/{amount}"
+    )
 
     conversion = conversion.json()
 
@@ -224,8 +232,8 @@ window.iconbitmap("icon/exchange_rate.ico")
 style = Style()
 
 # Configure styles
-style.configure('TButton', font=('Helvetica', 10), padding=10)
-style.configure('TFrames', font=('Helvetica', 10))
+style.configure("TButton", font=("Helvetica", 10), padding=10)
+style.configure("TFrames", font=("Helvetica", 10))
 
 # Frame for the exchange currency
 exchange_frame = Frame(window)
@@ -233,17 +241,19 @@ exchange_frame.pack(side="left", padx=10, expand=True, fill="both")
 
 # Exchange currency label
 exchange_label = Label(
-    exchange_frame, text="Exchange Currency", bootstyle="primary", font=("Helvetica", 10, "bold")).pack(pady=10)
+    exchange_frame,
+    text="Exchange Currency",
+    bootstyle="primary",
+    font=("Helvetica", 10, "bold"),
+).pack(pady=10)
 
 # Source currency
-source_currency_label = Label(
-    exchange_frame, text="Source currency:").pack()
+source_currency_label = Label(exchange_frame, text="Source currency:").pack()
 source_currency_entry = Entry(exchange_frame)
 source_currency_entry.pack()
 
 # Target currency
-target_currency_label = Label(
-    exchange_frame, text="Target Currency:").pack()
+target_currency_label = Label(exchange_frame, text="Target Currency:").pack()
 target_currency_entry = Entry(exchange_frame)
 target_currency_entry.pack()
 
@@ -253,8 +263,7 @@ amount_entry = Entry(exchange_frame)
 amount_entry.pack()
 
 # Button to convert the currency
-convert_button = Button(exchange_frame, text="Convert",
-                        command=convert_currency, style="TButton")
+convert_button = Button(exchange_frame, text="Convert", command=convert_currency, style="TButton", cursor=("hand2"))
 convert_button.pack(pady=10)
 
 # Result label
@@ -267,8 +276,12 @@ admin_frame = Frame(window)
 admin_frame.pack(side="left", padx=10, expand=True, fill="both")
 
 # Admin label
-admin_label = Label(admin_frame, text="Admin Only !", bootstyle="primary", font=(
-    "Helvetica", 10, "bold")).pack(pady=10)
+admin_label = Label(
+    admin_frame,
+    text="Admin Only !",
+    bootstyle="primary",
+    font=("Helvetica", 10, "bold"),
+).pack(pady=10)
 
 # Admin credentials
 admin_user_label = Label(admin_frame, text="Admin:").pack()
@@ -281,7 +294,8 @@ admin_password_entry.pack()
 
 # Button to check the API quota
 check_quota_button = Button(
-    admin_frame, text="Check API Quota (admin)", command=get_api_quota, style="TButton")
+    admin_frame, text="Check API Quota (admin)", command=get_api_quota, style="TButton", cursor=("hand2")
+)
 check_quota_button.pack(pady=10)
 
 quota_label = Label(admin_frame, text="Quota:")
@@ -293,7 +307,11 @@ exchange_rate_frame.pack(side="left", padx=10, expand=True, fill="both")
 
 # Exchange rate top label
 exchange_rate_top_label = Label(
-    exchange_rate_frame, text="Exchange Rate", bootstyle="primary", font=("Helvetica", 10, "bold")).pack(pady=10)
+    exchange_rate_frame,
+    text="Exchange Rate",
+    bootstyle="primary",
+    font=("Helvetica", 10, "bold"),
+).pack(pady=10)
 
 # Currency label for the exchange rate
 currency_label = Label(exchange_rate_frame, text="Source currency:")
@@ -303,9 +321,7 @@ from_currency_entry = Entry(exchange_rate_frame)
 from_currency_entry.pack()
 
 # Put the currency label under the source currency label
-to_currency_label = Label(
-    exchange_rate_frame, text="Target currency (Optional):"
-)
+to_currency_label = Label(exchange_rate_frame, text="Target currency (Optional):")
 to_currency_label.pack()
 
 to_currency_entry = Entry(exchange_rate_frame)
@@ -313,7 +329,8 @@ to_currency_entry.pack()
 
 # Button to get the exchange rate
 get_rate_button = Button(
-    exchange_rate_frame, text="Get exchange rate", command=get_exchange_rate, style="TButton")
+    exchange_rate_frame, text="Get exchange rate", command=get_exchange_rate, style="TButton", cursor=("hand2")
+)
 get_rate_button.pack(pady=10)
 
 # Label to display the exchange rate
@@ -331,8 +348,7 @@ main_menu = Menu(window)
 
 # Help menu
 help_menu = Menu(main_menu, tearoff=0)
-help_menu.add_command(label="How to use the app",
-                      command=show_usage_instructions_dialog)
+help_menu.add_command(label="How to use the app", command=show_usage_instructions_dialog)
 
 main_menu.add_cascade(label="Help", menu=help_menu)
 window.config(menu=main_menu)
@@ -343,16 +359,22 @@ def change_theme():
     if num % 2 == 0:
         style.theme_use("simplex")
     else:
-        style.theme_use("superhero")
-        style.configure('TButton', font=('Helvetica', 10), padding=10)
-        style.configure('TFrames', font=('Helvetica', 10))
+        style.theme_use("vapor")
+        style.configure("TButton", font=("Helvetica", 10), padding=10)
+        style.configure("TFrames", font=("Helvetica", 10))
 
 
 # Round Toggle button for Day/Night mode
 var = IntVar()
 round_toggle = Checkbutton(
-    admin_frame, bootstyle="primary, round-toggle", text="Day/Night Toggle", variable=var, onvalue=1, offvalue=0,
-    command=change_theme)
+    admin_frame,
+    bootstyle="primary, round-toggle",
+    text="Day/Night Toggle",
+    variable=var,
+    onvalue=1,
+    offvalue=0,
+    command=change_theme,
+)
 round_toggle.pack(side="bottom", pady=50)
 
 # Run the GUI
